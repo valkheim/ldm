@@ -5,9 +5,40 @@
 #include "main.h"
 #include "events.h"
 
+static void print_modifiers (uint32_t mask)
+{
+  const char **mod, *mods[] = {
+    "Shift", "Lock", "Ctrl", "Alt",
+    "Mod2", "Mod3", "Mod4", "Mod5",
+    "Button1", "Button2", "Button3", "Button4", "Button5"
+  };
+  printf ("Modifier mask: ");
+  for (mod = mods ; mask; mask >>= 1, mod++)
+    if (mask & 1)
+      printf(*mod);
+  putchar ('\n');
+}
+
 static void button_press_management(xcb_button_press_event_t * event)
 {
   printf("event = %s\n",xcb_event_get_label(event->response_type));
+  xcb_button_press_event_t *ev = (xcb_button_press_event_t *)event;
+  print_modifiers(ev->state);
+
+  switch (ev->detail) {
+    case 4:
+      printf ("Wheel Button up in window %u, at coordinates (%d,%d)\n",
+          ev->event, ev->event_x, ev->event_y);
+      break;
+    case 5:
+      printf ("Wheel Button down in window %u, at coordinates (%d,%d)\n",
+          ev->event, ev->event_x, ev->event_y);
+      break;
+    default:
+      printf ("Button %d pressed in window %u, at coordinates (%d,%d)\n",
+          ev->detail, ev->event, ev->event_x, ev->event_y);
+      break;
+  }
 }
 static void button_release_management(xcb_button_release_event_t * event)
 {
@@ -81,10 +112,16 @@ static void focus_in_management(xcb_focus_in_event_t *event)
 static void key_press_management(xcb_key_press_event_t *event)
 {
   printf("event = %s\n",xcb_event_get_label(event->response_type));
+  xcb_key_press_event_t *ev = (xcb_key_press_event_t *)event;
+  print_modifiers(ev->state);
+  printf ("Key pressed in window %u\n", ev->event);
 }
 static void key_release_management(xcb_key_release_event_t *event)
 {
   printf("event = %s\n",xcb_event_get_label(event->response_type));
+  xcb_key_release_event_t *ev = (xcb_key_release_event_t *)event;
+  print_modifiers(ev->state);
+  printf ("Key released in window %u\n", ev->event);
 }
 static void motion_notify_management(xcb_motion_notify_event_t * event)
 {
@@ -185,27 +222,29 @@ void event_management(xcb_generic_event_t *event)
 
 void dm_event_loop()
 {
-  xcb_generic_event_t *the_events;
+  xcb_generic_event_t *e;
   int done;
 
   /*enter the main loop*/
   done = 0;
-  while (!done && (the_events = xcb_wait_for_event(c)))
+  while (!done && (e = xcb_wait_for_event(c)))
   {
-    switch(the_events->response_type)
+    switch(e->response_type)
     {
       /*(re)draw the window*/
       case XCB_EXPOSE:
         printf ("EXPOSE\n");
+        xcb_expose_event_t *ev = (xcb_expose_event_t *)e;
+        printf ("Window %u exposed. Region to be redrawn at location (%d,%d), with dimension (%d,%d)\n",
+            ev->window, ev->x, ev->y, ev->width, ev->height);
         break;
-        /*exit on keypress*/
       //case XCB_KEY_PRESS:
       //  done = 1;
       //  break;
       default:
-        event_management(the_events);
-        printf("The events = %s\n",xcb_event_get_label(the_events->response_type));
+        event_management(e);
+        printf("The events = %s\n",xcb_event_get_label(e->response_type));
     }
-    free(the_events);
+    free(e);
   }
 }
