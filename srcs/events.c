@@ -1,20 +1,9 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
-#include <xcb/xcb.h>
-#include <xcb/xcb_keysyms.h>
-
-#include <xkbcommon/xkbcommon-names.h>
-#include <xkbcommon/xkbcommon-keysyms.h>
-#include <xkbcommon/xkbcommon-compat.h>
-#include <xkbcommon/xkbcommon.h>
 #include <xkbcommon/xkbcommon-compose.h>
-#include <xkbcommon/xkbcommon-x11.h>
 #include "main.h"
 #include "events.h"
 #include "keyboard.h"
 
-static void print_modifiers(xcb_keycode_t detail, uint32_t state)
+static void print_modifiers(xcb_keycode_t const detail, uint32_t state)
 {
   const char **mod, *mods[] = {
     "Shift", "Lock", "Ctrl", "Alt",
@@ -28,15 +17,13 @@ static void print_modifiers(xcb_keycode_t detail, uint32_t state)
   puts(")");
 }
 
-static void xkb_get_keysym(xcb_keycode_t detail)
+static void xkb_get_keysym(xcb_keycode_t const detail)
 {
   char buffer[128];
   bool composed = false;
   int n;
 
   xkb_keysym_t ksym = xkb_state_key_get_one_sym(xkb_state, detail);
-  //ctrl = xkb_state_mod_name_is_active(xkb_state, XKB_MOD_NAME_CTRL, XKB_STATE_MODS_DEPRESSED);
-
   if (xkb_compose_state && xkb_compose_state_feed(xkb_compose_state, ksym) == XKB_COMPOSE_FEED_ACCEPTED) {
     switch (xkb_compose_state_get_status(xkb_compose_state)) {
       case XKB_COMPOSE_NOTHING:
@@ -65,13 +52,13 @@ static void xkb_get_keysym(xcb_keycode_t detail)
   printf("xkb buffer : %s\n", buffer);
 }
 
-static void key_press_management(xcb_key_press_event_t *ev)
+static void key_press_management(xcb_key_press_event_t const * const ev)
 {
   print_modifiers(ev->detail, ev->state);
   xkb_get_keysym(ev->detail);
 }
 
-void event_management(xcb_generic_event_t *event)
+void event_management(xcb_generic_event_t const * const event)
 {
   uint8_t response_type = XCB_EVENT_RESPONSE_TYPE(event);
 

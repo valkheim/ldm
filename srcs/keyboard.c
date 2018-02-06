@@ -61,13 +61,13 @@ static bool load_compose_table(char const * const locale)
   xkb_compose_table_unref(xkb_compose_table);
 
   if ((xkb_compose_table = xkb_compose_table_new_from_locale(xkb_context, locale, 0)) == NULL) {
-    fprintf(stderr, "[i3lock] xkb_compose_table_new_from_locale failed\n");
+    fprintf(stderr, "xkb_compose_table_new_from_locale failed\n");
     return false;
   }
 
   struct xkb_compose_state *new_compose_state = xkb_compose_state_new(xkb_compose_table, 0);
   if (new_compose_state == NULL) {
-    fprintf(stderr, "[i3lock] xkb_compose_state_new failed\n");
+    fprintf(stderr, "xkb_compose_state_new failed\n");
     return false;
   }
 
@@ -77,7 +77,7 @@ static bool load_compose_table(char const * const locale)
   return true;
 }
 
-void setup_keyboard()
+void setup_keyboard(void)
 {
   uint8_t xkb_base_event;
   uint8_t xkb_base_error;
@@ -116,9 +116,8 @@ void setup_keyboard()
       required_map_parts,
       0);
 
-  /* When we cannot initially load the keymap, we better exit */
   if (!load_keymap())
-    errx(EXIT_FAILURE, "Could not load keymap");
+    fprintf(stderr, "Could not load keymap");
 
   const char *locale = getenv("LC_ALL");
   if (!locale || !*locale)

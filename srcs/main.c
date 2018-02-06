@@ -1,4 +1,3 @@
-// gcc `pkg-config --libs xcb` main.c -o main
 #include "main.h"
 #include "window.h"
 #include "events.h"
