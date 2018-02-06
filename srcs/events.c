@@ -44,6 +44,9 @@ static xcb_keysym_t xcb_get_keysym(xcb_keycode_t detail, uint16_t state)
 
   xcb_key_symbols_free(keysyms);
 
+  if (k1 == XCB_NO_SYMBOL)
+    k1 = k0;
+
   if (xcb_is_keypad_key(k1))
   {
     /* The Shift modifier  is on, or if the Lock  modifier is on and
