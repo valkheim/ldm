@@ -1,7 +1,3 @@
-#all:
-#	gcc `pkg-config --libs xcb xcb-util` main.c events.c window.c -o dm && ./dm
-#
-
 CC = gcc
 RM = rm -rf
 NAME = ldm
@@ -21,7 +17,7 @@ OBJS = $(SRCS:$(D_SRCS)/%.c=$(D_OBJS)/%.o)
 
 INC = -I $(D_INCS)
 
-CFLAGS = -W -Wall -Werror -Wextra -pedantic
+CFLAGS = #-W -Wall -Werror -Wextra -pedantic
 CFLAGS += $(INC)
 
 LDFLAGS = `pkg-config --libs xcb xcb-util`

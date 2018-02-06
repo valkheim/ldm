@@ -1,7 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <xcb/xcb.h>
-#include <xcb/xcb_util.h>
 #include "main.h"
 #include "events.h"
 
@@ -15,144 +13,15 @@ static void print_modifiers (uint32_t mask)
   printf ("Modifier mask: ");
   for (mod = mods ; mask; mask >>= 1, mod++)
     if (mask & 1)
-      printf(*mod);
+      printf("%s", *mod);
   putchar ('\n');
 }
 
-static void button_press_management(xcb_button_press_event_t * event)
-{
-  printf("event = %s\n",xcb_event_get_label(event->response_type));
-  xcb_button_press_event_t *ev = (xcb_button_press_event_t *)event;
-  print_modifiers(ev->state);
-
-  switch (ev->detail) {
-    case 4:
-      printf ("Wheel Button up in window %u, at coordinates (%d,%d)\n",
-          ev->event, ev->event_x, ev->event_y);
-      break;
-    case 5:
-      printf ("Wheel Button down in window %u, at coordinates (%d,%d)\n",
-          ev->event, ev->event_x, ev->event_y);
-      break;
-    default:
-      printf ("Button %d pressed in window %u, at coordinates (%d,%d)\n",
-          ev->detail, ev->event, ev->event_x, ev->event_y);
-      break;
-  }
-}
-static void button_release_management(xcb_button_release_event_t * event)
-{
-  printf("event = %s\n",xcb_event_get_label(event->response_type));
-}
-static void configure_request_management(xcb_configure_request_event_t * event)
-{
-  uint16_t config_win_mask = 0;
-  uint32_t config_win_vals[7];
-  unsigned short i = 0;
-
-  if(event->value_mask & XCB_CONFIG_WINDOW_X)
-  {
-    config_win_mask |= XCB_CONFIG_WINDOW_X;
-    config_win_vals[i++] = 300;
-    printf(" XCB_CONFIG_WINDOW_X\n");
-  }
-  if(event->value_mask & XCB_CONFIG_WINDOW_Y)
-  {
-    config_win_mask |= XCB_CONFIG_WINDOW_Y;
-    config_win_vals[i++] = 300;
-    printf(" XCB_CONFIG_WINDOW_Y\n");
-  }
-  if(event->value_mask & XCB_CONFIG_WINDOW_WIDTH)
-  {
-    config_win_mask |= XCB_CONFIG_WINDOW_WIDTH;
-    config_win_vals[i++] = event->width;
-    printf(" XCB_CONFIG_WINDOW_WIDTH\n");
-  }
-  if(event->value_mask & XCB_CONFIG_WINDOW_HEIGHT)
-  {
-    config_win_mask |= XCB_CONFIG_WINDOW_HEIGHT;
-    config_win_vals[i++] = event->height;
-    printf("XCB_CONFIG_WINDOW_HEIGHT");
-  }
-  if(event->value_mask & XCB_CONFIG_WINDOW_BORDER_WIDTH)
-  {
-    config_win_mask |= XCB_CONFIG_WINDOW_BORDER_WIDTH;
-    config_win_vals[i++] = event->border_width;
-    printf(" XCB_CONFIG_WINDOW_BORDER_WIDTH\n");
-  }
-  if(event->value_mask & XCB_CONFIG_WINDOW_SIBLING)
-  {
-    config_win_mask |= XCB_CONFIG_WINDOW_SIBLING;
-    config_win_vals[i++] = event->sibling;
-    printf(" XCB_CONFIG_WINDOW_SIBLING\n");
-  }
-  if(event->value_mask & XCB_CONFIG_WINDOW_STACK_MODE)
-  {
-    config_win_mask |= XCB_CONFIG_WINDOW_STACK_MODE;
-    config_win_vals[i++] = event->stack_mode;
-    printf(" XCB_CONFIG_WINDOW_STACK_MODE\n");
-  }
-
-  xcb_configure_window(c, event->window, config_win_mask, config_win_vals);
-  xcb_flush(c);
-  printf("event = %s\n",xcb_event_get_label(event->response_type));
-}
-static void client_message_management(xcb_client_message_event_t * event)
-{
-  printf("event = %s\n",xcb_event_get_label(event->response_type));
-}
-static void expose_management(xcb_expose_event_t *event)
-{
-  printf("event = %s\n",xcb_event_get_label(event->response_type));
-}
-static void focus_in_management(xcb_focus_in_event_t *event)
-{
-  printf("event = %s\n",xcb_event_get_label(event->response_type));
-}
 static void key_press_management(xcb_key_press_event_t *event)
 {
-  printf("event = %s\n",xcb_event_get_label(event->response_type));
   xcb_key_press_event_t *ev = (xcb_key_press_event_t *)event;
   print_modifiers(ev->state);
-  printf ("Key pressed in window %u\n", ev->event);
-}
-static void key_release_management(xcb_key_release_event_t *event)
-{
-  printf("event = %s\n",xcb_event_get_label(event->response_type));
-  xcb_key_release_event_t *ev = (xcb_key_release_event_t *)event;
-  print_modifiers(ev->state);
-  printf ("Key released in window %u\n", ev->event);
-}
-static void motion_notify_management(xcb_motion_notify_event_t * event)
-{
-  printf("event = %s\n",xcb_event_get_label(event->response_type));
-}
-static void map_request_management(xcb_map_request_event_t * event)
-{
-  xcb_map_window(c, event->window);
-  xcb_flush(c);
-  xcb_grab_button(c,0, event->window,XCB_EVENT_MASK_BUTTON_PRESS, XCB_GRAB_MODE_ASYNC, XCB_GRAB_MODE_ASYNC, XCB_NONE, XCB_NONE, XCB_BUTTON_INDEX_ANY, XCB_MOD_MASK_ANY);
-  printf("event = %s\n",xcb_event_get_label(event->response_type));
-}
-static void mapping_notify_management(xcb_motion_notify_event_t * event)
-{
-  printf("event = %s\n",xcb_event_get_label(event->response_type));
-}
-static void reparent_notify_management(xcb_reparent_notify_event_t * event)
-{
-  printf("event = %s\n",xcb_event_get_label(event->response_type));
-}
-static void unmap_notify_management(xcb_unmap_notify_event_t * event)
-{
-  printf("event = %s\n",xcb_event_get_label(event->response_type));
-}
-static void enter_notify_management(xcb_enter_notify_event_t * event)
-{
-  printf("event = %s\n",xcb_event_get_label(event->response_type));
-}
-static void leave_notify_management(xcb_leave_notify_event_t * event)
-{
-  printf("event = %s\n",xcb_event_get_label(event->response_type));
+  printf ("Key pressed in window %ld\n", ev->event);
 }
 
 void event_management(xcb_generic_event_t *event)
@@ -168,54 +37,13 @@ void event_management(xcb_generic_event_t *event)
 
   switch(response_type)
   {
-    case XCB_BUTTON_PRESS:
-      button_press_management((void *) event);
-      break;
-    case XCB_BUTTON_RELEASE:
-      button_release_management((void *)event);
-      break;
-    case XCB_CONFIGURE_REQUEST:
-      configure_request_management((void *)event);
-      break;
-    case XCB_CLIENT_MESSAGE:
-      client_message_management((void *)event);
-      break;
-    case XCB_EXPOSE:
-      expose_management((void *)event);
-      break;
-    case XCB_FOCUS_IN:
-      focus_in_management((void *)event);
-      break;
     case XCB_KEY_PRESS:
       key_press_management((void *)event);
       break;
-    case XCB_KEY_RELEASE:
-      key_release_management((void *)event);
-      break;
-    case XCB_MAP_REQUEST:
-      map_request_management((void *)event);
-      break;
-    case XCB_MAPPING_NOTIFY:
-      mapping_notify_management((void *)event);
-      break;case XCB_MOTION_NOTIFY:
-        motion_notify_management((void *)event);
-      break;
-    case XCB_REPARENT_NOTIFY:
-      reparent_notify_management((void *)event);
-      break;
-    case XCB_UNMAP_NOTIFY:
-      unmap_notify_management((void *)event);
-      break;
-    case XCB_ENTER_NOTIFY:
-      enter_notify_management((void *)event);
-      break;
-    case XCB_LEAVE_NOTIFY:
-      leave_notify_management((void *)event);
-      break;
     default:
-      printf("event = %s\n",xcb_event_get_label(event->response_type));
-      printf("%d\n",response_type);
-      perror("this kind of event is not managed\n");
+      //printf("event = %s\n",xcb_event_get_label(event->response_type));
+      //printf("%d\n",response_type);
+      //perror("this kind of event is not managed\n");
       break;
   }
 }
@@ -238,9 +66,9 @@ void dm_event_loop()
         printf ("Window %u exposed. Region to be redrawn at location (%d,%d), with dimension (%d,%d)\n",
             ev->window, ev->x, ev->y, ev->width, ev->height);
         break;
-      //case XCB_KEY_PRESS:
-      //  done = 1;
-      //  break;
+        //case XCB_KEY_PRESS:
+        //  done = 1;
+        //  break;
       default:
         event_management(e);
         printf("The events = %s\n",xcb_event_get_label(e->response_type));
