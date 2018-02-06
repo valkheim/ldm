@@ -16,11 +16,12 @@ void create_window()
                     win,                           /* window Id           */
                     screen->root,                  /* parent window       */
                     0, 0,                          /* x, y                */
-                    150, 150,                      /* width, height       */
-                    0,                            /* border_width        */
+                    screen->width_in_pixels,       /* width               */
+                    screen->height_in_pixels,      /* height              */
+                    0,                             /* border_width        */
                     XCB_WINDOW_CLASS_INPUT_OUTPUT, /* class               */
                     screen->root_visual,           /* visual              */
-                    mask, values);                      /* masks, values */
+                    mask, values);                 /* masks, values       */
   xcb_map_window(c, win);
   xcb_flush(c);
 }
