@@ -2,6 +2,7 @@
 #include "main.h"
 #include "window.h"
 #include "events.h"
+#include "keyboard.h"
 
 xcb_connection_t *c;
 xcb_screen_t *screen;
@@ -20,6 +21,8 @@ int main(void)
   printf ("\n");
 
   create_window();
+
+  setup_keyboard();
 
   dm_event_loop();
 
