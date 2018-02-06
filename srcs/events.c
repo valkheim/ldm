@@ -38,12 +38,13 @@ static xcb_keysym_t xcb_get_keysym(xcb_keycode_t detail) {
     return keysym;
 }
 
-static void key_press_management(xcb_key_press_event_t *event)
+static void key_press_management(xcb_key_press_event_t *ev)
 {
-  xcb_key_press_event_t *ev = (xcb_key_press_event_t *)event;
-  xcb_keysym_t keysym = xcb_get_keysym(ev->detail);
+  xcb_keysym_t keysym;
+
   print_modifiers(ev->state);
   printf("xcb: keypress: code: %d mod: %d\n", ev->detail, ev->state);
+  keysym = xcb_get_keysym(ev->detail);
   printf("xcb: keysym: %c\n", keysym);
 }
 
