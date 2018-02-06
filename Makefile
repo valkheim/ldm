@@ -16,11 +16,12 @@ SRCS = $(addprefix $(D_SRCS)/, \
 OBJS = $(SRCS:$(D_SRCS)/%.c=$(D_OBJS)/%.o)
 
 INC = -I $(D_INCS)
+INC += -I /usr/include/xcb
 
-CFLAGS = #-W -Wall -Werror -Wextra -pedantic
+CFLAGS = -W -Wall -Werror -Wextra -pedantic
 CFLAGS += $(INC)
 
-LDFLAGS = `pkg-config --libs xcb xcb-util`
+LDFLAGS = `pkg-config --libs xcb xcb-util xcb-keysyms`
 
 all: $(NAME)
 

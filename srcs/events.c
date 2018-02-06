@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <xcb/xcb.h>
+#include <xcb/xcb_keysyms.h>
 #include "main.h"
 #include "events.h"
 
@@ -17,11 +19,32 @@ static void print_modifiers (uint32_t mask)
   putchar ('\n');
 }
 
+static xcb_keysym_t xcb_get_keysym(xcb_keycode_t detail) {
+    xcb_key_symbols_t *keysyms;
+    xcb_keysym_t keysym;
+
+    if (!(keysyms = xcb_key_symbols_alloc(c)))
+      return 0;
+
+    keysym = xcb_key_symbols_get_keysym(keysyms, detail, 0);
+
+    /*
+     * adapt keysym using detail (modifier)
+     * https://github.com/Cloudef/monsterwm-xcb/blob/master/monsterwm.c
+     * https://lists.freedesktop.org/archives/xcb/2010-February/005562.html
+     */
+
+    xcb_key_symbols_free(keysyms);
+    return keysym;
+}
+
 static void key_press_management(xcb_key_press_event_t *event)
 {
   xcb_key_press_event_t *ev = (xcb_key_press_event_t *)event;
+  xcb_keysym_t keysym = xcb_get_keysym(ev->detail);
   print_modifiers(ev->state);
-  printf ("Key pressed in window %ld\n", ev->event);
+  printf("xcb: keypress: code: %d mod: %d\n", ev->detail, ev->state);
+  printf("xcb: keysym: %c\n", keysym);
 }
 
 void event_management(xcb_generic_event_t *event)
