@@ -33,6 +33,5 @@ int main(void)
   dm_event_loop();
 
   xcb_disconnect(c);
-
   return 0;
 }

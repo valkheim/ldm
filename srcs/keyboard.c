@@ -21,7 +21,7 @@ static struct xkb_context *xkb_context;
  */
 bool load_keymap(void)
 {
-  struct xkb_keymap *xkb_keymap = NULL;
+  static struct xkb_keymap *xkb_keymap = NULL;
 
   if (xkb_context == NULL) {
     if ((xkb_context = xkb_context_new(0)) == NULL) {
@@ -56,7 +56,7 @@ bool load_keymap(void)
  */
 static bool load_compose_table(char const * const locale)
 {
-  struct xkb_compose_table *xkb_compose_table = NULL;
+  static struct xkb_compose_table *xkb_compose_table = NULL;
 
   xkb_compose_table_unref(xkb_compose_table);
 
@@ -119,7 +119,7 @@ void setup_keyboard(void)
   if (!load_keymap())
     fprintf(stderr, "Could not load keymap");
 
-  const char *locale = getenv("LC_ALL");
+  char const *locale = getenv("LC_ALL");
   if (!locale || !*locale)
     locale = getenv("LC_CTYPE");
   if (!locale || !*locale)
