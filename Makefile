@@ -14,6 +14,7 @@ SRCS = $(addprefix $(D_SRCS)/, \
 			 keyboard.c \
 			 pam.c \
 			 x.c \
+			 args.c \
 			 )
 
 OBJS = $(SRCS:$(D_SRCS)/%.c=$(D_OBJS)/%.o)

@@ -2,15 +2,29 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <signal.h>
+#include "args.h"
 
 static pid_t x_server_pid;
 
-void start_x_server(char const * const display, char const * const vt)
+void stop_x_server(void)
 {
+  if (x_server_pid != 0)
+    kill(x_server_pid, SIGKILL);
+}
+
+static void sig_handler(/*int signo*/)
+{
+  stop_x_server();
+}
+
+void start_x_server(t_args *args)
+{
+  signal(SIGSEGV, sig_handler);
+  signal(SIGTRAP, sig_handler);
   if ((x_server_pid = fork()) == 0)
   {
     char cmd[32];
-    snprintf(cmd, sizeof(cmd), "/usr/bin/X %s %s", display, vt);
+    snprintf(cmd, sizeof(cmd), "/usr/bin/X %s %s", args->display, args->vt);
     execl("/bin/bash", "/bin/bash", "-c", cmd, NULL);
     printf("Failed to start X server");
     exit(1);
@@ -19,15 +33,5 @@ void start_x_server(char const * const display, char const * const vt)
   {
     sleep(1);
   }
-}
-
-void stop_x_server(void)
-{
-  if (x_server_pid != 0)
-    kill(x_server_pid, SIGKILL);
-}
-
-void sig_handler(/*int signo*/)
-{
-  stop_x_server();
+  setenv("DISPLAY", args->display, true);
 }

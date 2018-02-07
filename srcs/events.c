@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <xkbcommon/xkbcommon-compose.h>
 
 #include "main.h"

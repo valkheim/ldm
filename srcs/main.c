@@ -4,31 +4,33 @@
 #include "events.h"
 #include "keyboard.h"
 #include "x.h"
+#include "args.h"
 
 xcb_connection_t *c;
 xcb_screen_t *screen;
 
-int main(int argc, char **argv)
+static void display_screen_infos(void)
 {
-  char const *display = DISPLAY;
-#ifndef DEBUG
-  char const *vt = VT;
-#endif
-  if (argc == 3)
-  {
-    display = argv[1];
-#ifndef DEBUG
-    vt = argv[2];
-#endif
-  }
-#ifndef DEBUG
-  signal(SIGSEGV, sig_handler);
-  signal(SIGTRAP, sig_handler);
-  start_x_server(display, vt);
-#endif
-  setenv("DISPLAY", display, true);
+  printf ("\n");
+  printf ("Informations of screen %u:\n", screen->root);
+  printf ("  width.........: %d\n", screen->width_in_pixels);
+  printf ("  height........: %d\n", screen->height_in_pixels);
+  printf ("  white pixel...: %u\n", screen->white_pixel);
+  printf ("  black pixel...: %u\n", screen->black_pixel);
+  printf ("\n");
+}
 
-  c = xcb_connect(NULL, NULL); // Callers need to use xcb_connection_has_error() to check for failure.
+int main(int const argc, char **argv)
+{
+  t_args *args;
+
+  init_args(&args, argc, argv);
+  if (parse_args(argc, argv, args) == false)
+    return (84);
+  if (args->x == true)
+    start_x_server(args);
+
+  c = xcb_connect(NULL, NULL);
   if (xcb_connection_has_error(c) > 0)
   {
     fprintf(stderr, "xcb_connect failed\n");
@@ -37,20 +39,13 @@ int main(int argc, char **argv)
   }
   screen = xcb_setup_roots_iterator(xcb_get_setup(c)).data;
 
-  printf ("\n");
-  printf ("Informations of screen %u:\n", screen->root);
-  printf ("  width.........: %d\n", screen->width_in_pixels);
-  printf ("  height........: %d\n", screen->height_in_pixels);
-  printf ("  white pixel...: %u\n", screen->white_pixel);
-  printf ("  black pixel...: %u\n", screen->black_pixel);
-  printf ("\n");
-
+  display_screen_infos();
   create_window();
   setup_keyboard();
   dm_event_loop();
 
-
-  stop_x_server();
+  if (args->x == true)
+    stop_x_server();
   xcb_disconnect(c);
   return 0;
 }
