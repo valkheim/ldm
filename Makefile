@@ -67,7 +67,7 @@ clean:
 	$(RM) $(D_OBJS)
 	$(RM) $(OBJS)
 
-fclean: clean
+fclean: clean uninstall
 	$(RM) $(NAME)
 
 re: fclean all
