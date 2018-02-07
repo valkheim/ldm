@@ -1,12 +1,32 @@
 #include "main.h"
 #include "window.h"
 
+xcb_gcontext_t foreground;
+xcb_drawable_t win;
+
+static xcb_gcontext_t create_graphical_ctx(uint32_t const color)
+{
+  /* create graphic context */
+  xcb_gcontext_t const ctx = xcb_generate_id(c);
+  uint32_t const mask = XCB_GC_FOREGROUND | XCB_GC_GRAPHICS_EXPOSURES;
+  //values[0] = screen->white_pixel;
+  uint32_t const values[] = { color, 0 };
+  xcb_create_gc(c, ctx, win, mask, values);
+  return ctx;
+}
+
 void create_window(void)
 {
-  xcb_window_t const win = xcb_generate_id(c);
-  uint32_t const mask = XCB_CW_BACK_PIXEL | XCB_CW_EVENT_MASK;
-  uint32_t values[2];
-  values[0] = screen->white_pixel;
+  uint32_t mask = 0;
+  uint32_t values[2] = { 0 };
+
+  win = screen->root;
+
+  foreground = create_graphical_ctx(0xA349A3);
+  /* create the window */
+  win = xcb_generate_id(c);
+  mask = XCB_CW_BACK_PIXEL | XCB_CW_EVENT_MASK;
+  values[0] = screen->black_pixel;
   values[1] = XCB_EVENT_MASK_EXPOSURE       | XCB_EVENT_MASK_BUTTON_PRESS   |
               XCB_EVENT_MASK_BUTTON_RELEASE | XCB_EVENT_MASK_POINTER_MOTION |
               XCB_EVENT_MASK_ENTER_WINDOW   | XCB_EVENT_MASK_LEAVE_WINDOW   |
