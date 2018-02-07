@@ -1,8 +1,10 @@
 #include <xkbcommon/xkbcommon-compose.h>
+
 #include "main.h"
 #include "events.h"
 #include "keyboard.h"
 #include "window.h"
+#include "pam.h"
 
 static void print_modifiers(xcb_keycode_t const detail, uint32_t state)
 {
@@ -35,6 +37,7 @@ static bool handle_control_keysym(xkb_keysym_t const ksym)
       return true;
     case XKB_KEY_Return:
       puts("RETURN");
+      login("ldm", "ldm");
       return true;
     case XKB_KEY_BackSpace:
       puts("BACKSPACE");

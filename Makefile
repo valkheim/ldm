@@ -12,6 +12,8 @@ SRCS = $(addprefix $(D_SRCS)/, \
 			 events.c \
 			 window.c \
 			 keyboard.c \
+			 pam.c \
+			 x.c \
 			 )
 
 OBJS = $(SRCS:$(D_SRCS)/%.c=$(D_OBJS)/%.o)
@@ -22,7 +24,7 @@ INC += -I /usr/include/xcb
 CFLAGS = -W -Wall -Werror -Wextra -pedantic
 CFLAGS += $(INC)
 
-LDFLAGS = `pkg-config --libs xcb xcb-util xcb-keysyms xcb-xkb xkbcommon xkbcommon-x11`
+LDFLAGS = `pkg-config --libs xcb xcb-util xcb-keysyms xcb-xkb xkbcommon xkbcommon-x11` -lpam
 
 all: $(NAME)
 
