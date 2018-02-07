@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <signal.h>
 #include "args.h"
+#include "x.h"
 
 static pid_t x_server_pid;
 

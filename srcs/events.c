@@ -52,7 +52,7 @@ static void xkb_get_keysym(xcb_keycode_t const detail)
 {
   char buffer[128];
   bool composed = false;
-  int n;
+  int n = 0;
 
   xkb_keysym_t ksym = xkb_state_key_get_one_sym(xkb_state, detail);
   if (handle_control_keysym(ksym))
@@ -86,8 +86,9 @@ static void xkb_get_keysym(xcb_keycode_t const detail)
   printf("xkb buffer : %s\n", buffer);
 }
 
-static void key_press_management(xcb_key_press_event_t const * const ev)
+static void key_press_management(xcb_generic_event_t const * const e)
 {
+  xcb_key_press_event_t const * const ev = (xcb_key_press_event_t const * const)e;
   print_modifiers(ev->detail, ev->state);
   xkb_get_keysym(ev->detail);
 }
@@ -107,7 +108,7 @@ void event_management(xcb_generic_event_t const * const event)
     case XCB_KEY_PRESS:
       if (!load_keymap())
         fprintf(stderr, "Could not load keymap");
-      key_press_management((void *)event);
+      key_press_management(event);
       break;
     default:
       //printf("event = %s\n",xcb_event_get_label(event->response_type));

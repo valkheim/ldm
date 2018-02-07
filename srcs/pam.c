@@ -80,7 +80,7 @@ static int conv(int num_msg, const struct pam_message **msg,
   char *username = NULL;
   char *password = NULL;
 
-  if ((*resp = calloc(num_msg, sizeof(struct pam_response))) == NULL)
+  if ((*resp = calloc((unsigned long)num_msg, sizeof(struct pam_response))) == NULL)
     return PAM_BUF_ERR;
 
   result = PAM_SUCCESS;

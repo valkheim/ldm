@@ -93,7 +93,7 @@ void setup_keyboard(void)
     errx(EXIT_FAILURE, "Could not setup XKB extension.");
 
   static const xcb_xkb_map_part_t required_map_parts =
-    (XCB_XKB_MAP_PART_KEY_TYPES |
+    (xcb_xkb_map_part_t)(XCB_XKB_MAP_PART_KEY_TYPES |
      XCB_XKB_MAP_PART_KEY_SYMS |
      XCB_XKB_MAP_PART_MODIFIER_MAP |
      XCB_XKB_MAP_PART_EXPLICIT_COMPONENTS |
@@ -102,13 +102,13 @@ void setup_keyboard(void)
      XCB_XKB_MAP_PART_VIRTUAL_MOD_MAP);
 
   static const xcb_xkb_event_type_t required_events =
-    (XCB_XKB_EVENT_TYPE_NEW_KEYBOARD_NOTIFY |
+    (xcb_xkb_event_type_t)(XCB_XKB_EVENT_TYPE_NEW_KEYBOARD_NOTIFY |
      XCB_XKB_EVENT_TYPE_MAP_NOTIFY |
      XCB_XKB_EVENT_TYPE_STATE_NOTIFY);
 
   xcb_xkb_select_events(
       c,
-      xkb_x11_get_core_keyboard_device_id(c),
+      (uint16_t)xkb_x11_get_core_keyboard_device_id(c),
       required_events,
       0,
       required_events,
