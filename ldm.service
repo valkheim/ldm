@@ -1,0 +1,9 @@
+[Unit]
+Description=Lean Display Manager
+After=systemd-user-sessions.service
+
+[Service]
+ExecStart=/usr/bin/ldm
+
+[Install]
+Alias=ldm.service

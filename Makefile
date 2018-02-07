@@ -28,6 +28,14 @@ LDFLAGS = `pkg-config --libs xcb xcb-util xcb-keysyms xcb-xkb xkbcommon xkbcommo
 
 all: $(NAME)
 
+install: all
+	cp $(NAME) /usr/bin/
+	cp $(NAME).service /usr/lib/systemd/system/
+
+uninstall:
+	rm -f /usr/bin/$(NAME)
+	rm -f /usr/lib/systemd/system/$(NAME).service
+
 $(NAME): $(OBJS)
 	$(CC) -o $(NAME) $(OBJS) $(CFLAGS) $(LDFLAGS)
 	@echo -e "\033[38;5;10m=== $(NAME): Compiled !\033[0m"
