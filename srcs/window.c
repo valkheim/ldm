@@ -1,7 +1,7 @@
 #include "main.h"
 #include "window.h"
 
-void create_window()
+void create_window(void)
 {
   xcb_window_t const win = xcb_generate_id(c);
   uint32_t const mask = XCB_CW_BACK_PIXEL | XCB_CW_EVENT_MASK;

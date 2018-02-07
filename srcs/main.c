@@ -9,6 +9,13 @@ xcb_screen_t *screen;
 int main(void)
 {
   c = xcb_connect(NULL, NULL); // Callers need to use xcb_connection_has_error() to check for failure.
+  if (xcb_connection_has_error(c) > 0)
+  {
+    fprintf(stderr, "xcb_connect failed\n");
+    xcb_disconnect(c);
+    return 1;
+  }
+
   screen = xcb_setup_roots_iterator(xcb_get_setup(c)).data;
 
   printf ("\n");

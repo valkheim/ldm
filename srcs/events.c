@@ -17,6 +17,32 @@ static void print_modifiers(xcb_keycode_t const detail, uint32_t state)
   puts(")");
 }
 
+static bool handle_control_keysym(xkb_keysym_t const ksym)
+{
+  switch (ksym) {
+    case XKB_KEY_Left:
+      puts("LEFT");
+      return true;
+    case XKB_KEY_Up:
+      puts("UP");
+      return true;
+    case XKB_KEY_Right:
+      puts("RIGHT");
+      return true;
+    case XKB_KEY_Down:
+      puts("DOWN");
+      return true;
+    case XKB_KEY_Return:
+      puts("RETURN");
+      return true;
+    case XKB_KEY_BackSpace:
+      puts("BACKSPACE");
+      return true;
+    default:
+      return false;
+  }
+}
+
 static void xkb_get_keysym(xcb_keycode_t const detail)
 {
   char buffer[128];
@@ -24,6 +50,8 @@ static void xkb_get_keysym(xcb_keycode_t const detail)
   int n;
 
   xkb_keysym_t ksym = xkb_state_key_get_one_sym(xkb_state, detail);
+  if (handle_control_keysym(ksym))
+    return;
   if (xkb_compose_state && xkb_compose_state_feed(xkb_compose_state, ksym) == XKB_COMPOSE_FEED_ACCEPTED) {
     switch (xkb_compose_state_get_status(xkb_compose_state)) {
       case XKB_COMPOSE_NOTHING:
@@ -49,6 +77,7 @@ static void xkb_get_keysym(xcb_keycode_t const detail)
 
   if (n < 2)
     return;
+
   printf("xkb buffer : %s\n", buffer);
 }
 
@@ -105,8 +134,8 @@ void dm_event_loop()
         //  done = 1;
         //  break;
       default:
-        event_management(e);
         printf("event = %s\n",xcb_event_get_label(e->response_type));
+        event_management(e);
     }
     free(e);
   }
