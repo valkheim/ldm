@@ -53,7 +53,6 @@ bool args_virtual_terminal(t_args *args)
 bool parse_args(int ac, char **av, t_args *args)
 {
   int opt;
-  size_t i;
   bool ret = true;
 
   struct option long_opt[] = {
@@ -64,7 +63,7 @@ bool parse_args(int ac, char **av, t_args *args)
     {NULL, 0, NULL, 0}};
   while ((opt = getopt_long(ac, av, "hxd:t:", long_opt, NULL)) != -1)
   {
-    i = 0;
+    size_t i = 0;
     while (i < (sizeof(g_args_parsing_table) / sizeof(*g_args_parsing_table)))
     {
       args->optarg = optarg;
