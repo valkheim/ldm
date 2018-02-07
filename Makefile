@@ -56,9 +56,9 @@ fclean: clean
 re: fclean all
 
 test: re
-	Xephyr -br -ac -noreset -screen "1024x640" :1 &
+	Xephyr -br -ac -noreset -screen "1024x640" :2 &
 	sleep 1
-	DISPLAY=:1 ./$(NAME)
+	DISPLAY=:2 ./$(NAME) -d ":3"
 
 dbg: CFLAGS += -g3 -O0 -DDEBUG
 dbg: re
