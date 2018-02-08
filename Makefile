@@ -75,7 +75,7 @@ re: fclean all
 test: re
 	Xephyr -br -ac -noreset -screen "1024x640" :2 &
 	sleep 1
-	DISPLAY=:2 ./$(NAME) -d ":3"
+	DISPLAY=:2 sudo ./$(NAME) -d ":2"
 
 dbg: CFLAGS += -g3 -O0 -DDEBUG
 dbg: re
