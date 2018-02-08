@@ -6,6 +6,12 @@ Trying to get comfy with x11, xcb, xkbcommon, pam.
 
 ldm starts an X server, open a pam session, source user's xinitrc, waits, closes pam session.
 
+## Lean
+
+Using valgrind's massif tool and massif-visualizer.
+
+![Memory consumption](memory_consumption.png)
+
 ## License
 
 Copyright (C) 2017-2018 Charles Paulet
