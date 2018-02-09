@@ -34,17 +34,16 @@ static pam_handle_t *pam_handle;
 
 void login(char const * const username, char const * const password)
 {
-  pid_t child_pid;
+  pid_t pid;
   int status;
 
-  pam_login(username, password, &child_pid);
-  waitpid(child_pid, &status, 0);
+  pam_login(username, password, &pid);
+  waitpid(pid, &status, 0);
   pam_logout();
 }
 
 void pam_login(char const * const username, char const * const password, pid_t * const child_pid)
 {
-  puts("PAM_LOGIN");
   int result;
   char const *data[2] = { username, password };
   struct pam_conv const pam_conv = {
@@ -77,7 +76,6 @@ void pam_login(char const * const username, char const * const password, pid_t *
     case 0:
       chdir(pw->pw_dir);
       char *cmd = "exec /bin/bash --login .xinitrc";
-      puts("CALL XINITRC");
       execl(pw->pw_shell, pw->pw_shell, "-c", cmd, NULL);
       fprintf(stderr, "Failed to start ldm\n");
       _exit(1);
@@ -132,7 +130,8 @@ static int conv(int num_msg, const struct pam_message **msg,
   return result;
 }
 
-static void init_env(struct passwd *pw) {
+static void init_env(struct passwd * const pw)
+{
   set_env("HOME", pw->pw_dir);
   set_env("PWD", pw->pw_dir);
   set_env("SHELL", pw->pw_shell);
@@ -141,8 +140,8 @@ static void init_env(struct passwd *pw) {
   set_env("PATH", "/usr/local/sbin:/usr/local/bin:/usr/bin");
   set_env("MAIL", _PATH_MAILDIR);
 
-  size_t xauthority_len = strlen(pw->pw_dir) + strlen("/.Xauthority") + 1;
-  char *xauthority = malloc(xauthority_len);
+  size_t const xauthority_len = strlen(pw->pw_dir) + strlen("/.Xauthority") + 1;
+  char * const xauthority = malloc(xauthority_len);
   snprintf(xauthority, xauthority_len, "%s/.Xauthority", pw->pw_dir);
   set_env("XAUTHORITY", xauthority);
   free(xauthority);
