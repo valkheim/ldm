@@ -17,7 +17,7 @@
 
 #pragma once
 #include <xcb/xcb.h>
-#include "event.h"
+#include "events.h"
 
 void create_window(void);
 extern xcb_gcontext_t foreground;
