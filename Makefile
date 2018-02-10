@@ -47,8 +47,8 @@ LDFLAGS = `pkg-config --libs xcb xcb-util xcb-keysyms xcb-xkb xkbcommon xkbcommo
 all: $(NAME)
 
 install: all
-	cp $(NAME) /usr/bin/
-	cp $(NAME).service /usr/lib/systemd/system/
+	install -D $(NAME) /usr/bin/
+	install $(NAME).service /usr/lib/systemd/system/
 
 uninstall:
 	rm -f /usr/bin/$(NAME)
