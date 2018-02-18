@@ -46,7 +46,6 @@ void draw(void)
 static void *color_border(void *arg)
 {
   t_draw_options * const colors = (t_draw_options * const)arg;
-  printf("from: [%d]\nto: [%d]\n", colors->from, colors->to);
   pthread_mutex_lock(&lock_ctxs);
   main_ctx = ctxs[colors->from];
   pthread_mutex_unlock(&lock_ctxs);
