@@ -15,6 +15,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <unistd.h>
 #include <stdio.h>
 #include <signal.h>
 #include "main.h"
@@ -47,7 +48,8 @@ int main(int const argc, char **argv)
     return (84);
   if (args->x == true)
     start_x_server(args);
-
+  // Wait for X to be launched
+  sleep(3);
   c = xcb_connect(NULL, NULL);
   if (xcb_connection_has_error(c) > 0)
   {
