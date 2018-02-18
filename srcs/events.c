@@ -16,6 +16,7 @@
 */
 
 #include <stdlib.h>
+#include <string.h>
 #include <xkbcommon/xkbcommon-compose.h>
 
 #include "main.h"
@@ -24,6 +25,11 @@
 #include "window.h"
 #include "pam.h"
 #include "draw.h"
+
+#define isutf(c) (((c)&0xC0) != 0x80)
+
+static unsigned int input_position = 0;
+static char password[PASSWORD_MAX_LENGTH] = { 0 };
 
 static void print_modifiers(xcb_keycode_t const detail, uint32_t state)
 {
@@ -37,6 +43,12 @@ static void print_modifiers(xcb_keycode_t const detail, uint32_t state)
     if (state & 1)
       printf("%s", *mod);
   puts(")");
+}
+
+static void u8_dec(char const * const s, unsigned int * const i)
+{
+  if (*i > 0)
+    (void)(isutf(s[--(*i)]) || isutf(s[--(*i)]) || isutf(s[--(*i)]) || --(*i));
 }
 
 static bool handle_control_keysym(xkb_keysym_t const ksym, t_draw_options * const colors)
@@ -57,12 +69,14 @@ static bool handle_control_keysym(xkb_keysym_t const ksym, t_draw_options * cons
     case XKB_KEY_Return:
       puts("RETURN");
       colors->from = CTX_PROCESSING;
-      if (login("ldm", "dm") == false)
+      if (login("ldm", password) == false)
         colors->from = CTX_DENIED;
       return true;
     case XKB_KEY_BackSpace:
       colors->from = CTX_PROCESSING;
       puts("BACKSPACE");
+      u8_dec(password, &input_position);
+      password[input_position] = '\0';
       return true;
     default:
       return false;
@@ -86,10 +100,6 @@ static void xkb_get_keysym(xcb_keycode_t const detail)
   }
   if (xkb_compose_state && xkb_compose_state_feed(xkb_compose_state, ksym) == XKB_COMPOSE_FEED_ACCEPTED) {
     switch (xkb_compose_state_get_status(xkb_compose_state)) {
-      case XKB_COMPOSE_NOTHING:
-        break;
-      case XKB_COMPOSE_COMPOSING:
-        return;
       case XKB_COMPOSE_COMPOSED:
         /* xkb_compose_state_get_utf8 doesn't include the terminating byte in the return value
          * as xkb_keysym_to_utf8 does. Adding one makes the variable n consistent. */
@@ -100,6 +110,8 @@ static void xkb_get_keysym(xcb_keycode_t const detail)
       case XKB_COMPOSE_CANCELLED:
         xkb_compose_state_reset(xkb_compose_state);
         return;
+      default:
+        break;
     }
   }
   draw_borders(colors);
@@ -111,7 +123,12 @@ static void xkb_get_keysym(xcb_keycode_t const detail)
   if (n < 2)
     return;
 
-  printf("xkb buffer : %s\n", buffer);
+  if (input_position < PASSWORD_MAX_LENGTH)
+  {
+    memcpy(password + input_position, buffer, n - 1);
+    input_position += n - 1;
+  }
+  printf("current password = %.*s\ninput position = %d\n", input_position, password, input_position);
 }
 
 static void key_press_management(xcb_generic_event_t const * const e)

@@ -17,5 +17,7 @@
 
 #pragma once
 
+#define PASSWORD_MAX_LENGTH (512)
+
 void event_management(xcb_generic_event_t const * const);
 void dm_event_loop(void);
