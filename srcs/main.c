@@ -77,7 +77,7 @@ int main(int const argc, char **argv)
     fprintf(stderr, "mutex init failed\n");
     return gtfo(args, EXIT_FAILURE);
   }
-  dm_event_loop();
+  event_loop();
 
   // use atexit(). fork() behaviour ?
   pthread_mutex_destroy(&lock_ctxs);

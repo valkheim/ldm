@@ -46,7 +46,7 @@ static void print_modifiers(xcb_keycode_t const detail, uint32_t state)
   puts(")");
 }
 
-static void u8_dec(char const * const s, unsigned int * const i)
+static void decrements_utf8(char const * const s, unsigned int * const i)
 {
   if (*i > 0)
     (void)(isutf(s[--(*i)]) || isutf(s[--(*i)]) || isutf(s[--(*i)]) || --(*i));
@@ -80,7 +80,7 @@ static bool handle_control_keysym(xkb_keysym_t const ksym, t_draw_options * cons
     case XKB_KEY_BackSpace:
       colors->from = CTX_PROCESSING;
       puts("BACKSPACE");
-      u8_dec(password, &input_position);
+      decrements_utf8(password, &input_position);
       password[input_position] = '\0';
       return true;
     default:
@@ -96,7 +96,6 @@ static void xkb_get_keysym(xcb_keycode_t const detail)
   t_draw_options * const colors = (t_draw_options *)malloc(sizeof(*colors));
   colors->from = CTX_TYPE;
   colors->to = CTX_IDLE;
-
   xkb_keysym_t ksym = xkb_state_key_get_one_sym(xkb_state, detail);
   if (handle_control_keysym(ksym, colors))
   {
@@ -110,8 +109,6 @@ static void xkb_get_keysym(xcb_keycode_t const detail)
       case XKB_COMPOSE_COMPOSING:
         break;
       case XKB_COMPOSE_COMPOSED:
-        /* xkb_compose_state_get_utf8 doesn't include the terminating byte in the return value
-         * as xkb_keysym_to_utf8 does. Adding one makes the variable n consistent. */
         n = xkb_compose_state_get_utf8(xkb_compose_state, buffer, sizeof(buffer)) + 1;
         ksym = xkb_compose_state_get_one_sym(xkb_compose_state);
         composed = true;
@@ -145,32 +142,7 @@ static void key_press_management(xcb_generic_event_t const * const e)
   xkb_get_keysym(ev->detail);
 }
 
-void event_management(xcb_generic_event_t const * const event)
-{
-  uint8_t response_type = XCB_EVENT_RESPONSE_TYPE(event);
-
-  if (response_type == 0)
-  {
-    perror("response_type = 0");
-    return;
-  }
-
-  switch(response_type)
-  {
-    case XCB_KEY_PRESS:
-      if (!load_keymap())
-        fprintf(stderr, "Could not load keymap");
-      key_press_management(event);
-      break;
-    default:
-      //printf("event = %s\n",xcb_event_get_label(event->response_type));
-      //printf("%d\n",response_type);
-      //perror("this kind of event is not managed\n");
-      break;
-  }
-}
-
-void dm_event_loop()
+void event_loop(void)
 {
   xcb_generic_event_t *e;
 
@@ -188,9 +160,11 @@ void dm_event_loop()
           draw();
         }
         break;
-      default:
-        //printf("event = %s\n",xcb_event_get_label(e->response_type));
-        event_management(e);
+      case XCB_KEY_PRESS:
+        if (!load_keymap())
+          fprintf(stderr, "Could not load keymap");
+        key_press_management(e);
+        break;
     }
     free(e);
   }
