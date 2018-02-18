@@ -19,7 +19,7 @@
 #include <stdbool.h>
 #include <getopt.h>
 
-typedef struct s_args
+typedef struct
 {
   char *optarg;
   char **av;
@@ -32,7 +32,7 @@ typedef struct s_args
 } t_args;
 
 typedef bool (*t_args_func)(t_args *);
-typedef struct __attribute__((__packed__)) s_func_args
+typedef struct __attribute__((__packed__))
 {
   char opt;
   t_args_func func;

@@ -28,7 +28,8 @@
 extern xcb_gcontext_t main_ctx;
 extern xcb_gcontext_t ctxs[CTXS_NUMBER];
 
-typedef struct s_draw_options {
+typedef struct
+{
   int from;
   int to;
 } t_draw_options;
