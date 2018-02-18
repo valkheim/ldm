@@ -1,6 +1,6 @@
 /*
  * This file is part of the ldm distribution (https://github.com/valkheim/ldm)
- * Copyright (c) BORDER_WIDTH18 Charles Paulet.
+ * Copyright (c) 2018 Charles Paulet.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
