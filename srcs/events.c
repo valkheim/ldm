@@ -23,6 +23,7 @@
 #include "keyboard.h"
 #include "window.h"
 #include "pam.h"
+#include "draw.h"
 
 static void print_modifiers(xcb_keycode_t const detail, uint32_t state)
 {
@@ -140,9 +141,6 @@ void dm_event_loop()
   xcb_generic_event_t *e;
   int done;
 
-  xcb_rectangle_t rectangles[] = {
-    {40, 40, 20, 20},
-  };
 
   /* enter the main loop */
   done = 0;
@@ -156,9 +154,7 @@ void dm_event_loop()
         xcb_expose_event_t *ev = (xcb_expose_event_t *)e;
         printf ("Window %u exposed. Region to be redrawn at location (%d,%d), with dimension (%d,%d)\n",
             ev->window, ev->x, ev->y, ev->width, ev->height);
-        xcb_poly_fill_rectangle(c, win, foreground, 1, rectangles);
-        xcb_image_text_8(c, 5, win, foreground, 20, 20, "hello");
-        xcb_flush(c);
+        draw();
         break;
         //case XCB_KEY_PRESS:
         //  xcb_poly_fill_rectangle(c, win, foreground, 1, rectangles);

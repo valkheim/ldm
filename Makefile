@@ -32,6 +32,7 @@ SRCS = $(addprefix $(D_SRCS)/, \
 			 pam.c \
 			 x.c \
 			 args.c \
+			 draw.c \
 			 )
 
 OBJS = $(SRCS:$(D_SRCS)/%.c=$(D_OBJS)/%.o)
