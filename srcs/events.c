@@ -101,6 +101,10 @@ static void xkb_get_keysym(xcb_keycode_t const detail)
   }
   if (xkb_compose_state && xkb_compose_state_feed(xkb_compose_state, ksym) == XKB_COMPOSE_FEED_ACCEPTED) {
     switch (xkb_compose_state_get_status(xkb_compose_state)) {
+      case XKB_COMPOSE_NOTHING:
+        break;
+      case XKB_COMPOSE_COMPOSING:
+        break;
       case XKB_COMPOSE_COMPOSED:
         /* xkb_compose_state_get_utf8 doesn't include the terminating byte in the return value
          * as xkb_keysym_to_utf8 does. Adding one makes the variable n consistent. */
@@ -111,8 +115,6 @@ static void xkb_get_keysym(xcb_keycode_t const detail)
       case XKB_COMPOSE_CANCELLED:
         xkb_compose_state_reset(xkb_compose_state);
         return;
-      default:
-        break;
     }
   }
   draw_borders(colors);
@@ -126,8 +128,8 @@ static void xkb_get_keysym(xcb_keycode_t const detail)
 
   if (input_position < PASSWORD_MAX_LENGTH)
   {
-    memcpy(password + input_position, buffer, n - 1);
-    input_position += n - 1;
+    memcpy(password + input_position, buffer, (size_t)(n - 1));
+    input_position += (size_t)(n - 1);
   }
   printf("current password = %.*s\ninput position = %d\n", input_position, password, input_position);
 }

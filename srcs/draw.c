@@ -33,9 +33,9 @@ void draw(void)
   xcb_rectangle_t rectangles[] = {
   /* x, y, wdt, hgt */
     {0, 0, BORDER_WIDTH, screen->height_in_pixels},
-    {screen->width_in_pixels - BORDER_WIDTH, 0, BORDER_WIDTH, screen->height_in_pixels},
+    {(int16_t)(screen->width_in_pixels - BORDER_WIDTH), 0, BORDER_WIDTH, screen->height_in_pixels},
     {0, 0, screen->width_in_pixels, BORDER_WIDTH},
-    {0, screen->height_in_pixels - BORDER_WIDTH, screen->width_in_pixels, BORDER_WIDTH},
+    {0, (int16_t)(screen->height_in_pixels - BORDER_WIDTH), screen->width_in_pixels, BORDER_WIDTH},
   };
 
   xcb_poly_fill_rectangle(c, win, main_ctx, sizeof(rectangles) / sizeof(rectangles[0]), rectangles);
