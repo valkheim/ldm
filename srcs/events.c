@@ -71,7 +71,11 @@ static bool handle_control_keysym(xkb_keysym_t const ksym, t_draw_options * cons
       puts("RETURN");
       colors->from = CTX_PROCESSING;
       if (login("ldm", password) == false)
+      {
         colors->from = CTX_DENIED;
+        bzero(password, PASSWORD_MAX_LENGTH);
+        input_position = 0;
+      }
       return true;
     case XKB_KEY_BackSpace:
       colors->from = CTX_PROCESSING;
