@@ -19,6 +19,7 @@
 #include <string.h>
 #include <xkbcommon/xkbcommon-compose.h>
 
+#include "config.h"
 #include "main.h"
 #include "events.h"
 #include "keyboard.h"

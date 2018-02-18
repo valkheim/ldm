@@ -17,5 +17,15 @@
 
 #pragma once
 
-void event_management(xcb_generic_event_t const * const);
-void dm_event_loop(void);
+#define BORDER_WIDTH (10)
+
+/* Tango palette color */
+/* https://sobac.com/sobac/tangocolors.htm */
+#define COLOR_IDLE (0) /* black */
+#define COLOR_TYPE (0x555753) /* slate */
+#define COLOR_PROCESSING (0xedd400) /* butter */
+#define COLOR_DENIED (0xcc0000) /* scarlet red */
+#define COLOR_GRANTED (0x73d216) /* chameleon */
+#define COLOR_TEXT (0xd3d7cf) /* aluminium */
+
+#define PASSWORD_MAX_LENGTH (512)

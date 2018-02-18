@@ -17,8 +17,6 @@
 
 #pragma once
 
-#define BORDER_WIDTH (10)
-
 #define CTX_IDLE (0)
 #define CTX_TYPE (1)
 #define CTX_PROCESSING (2)
@@ -26,15 +24,6 @@
 #define CTX_GRANTED (4)
 #define CTX_TEXT (5)
 #define CTXS_NUMBER (6)
-
-/* Tango palette color */
-/* https://sobac.com/sobac/tangocolors.htm */
-#define COLOR_IDLE (0) /* black */
-#define COLOR_TYPE (0x555753) /* slate */
-#define COLOR_PROCESSING (0xedd400) /* butter */
-#define COLOR_DENIED (0xcc0000) /* scarlet red */
-#define COLOR_GRANTED (0x73d216) /* chameleon */
-#define COLOR_TEXT (0xd3d7cf) /* aluminium */
 
 extern xcb_gcontext_t main_ctx;
 extern xcb_gcontext_t ctxs[CTXS_NUMBER];

@@ -19,6 +19,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+
+#include "config.h"
 #include "window.h"
 #include "main.h"
 #include "draw.h"
