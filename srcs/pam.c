@@ -32,17 +32,19 @@ static int conv(int num_msg, const struct pam_message **msg,
 
 static pam_handle_t *pam_handle;
 
-void login(char const * const username, char const * const password)
+bool login(char const * const username, char const * const password)
 {
   pid_t pid;
   int status;
 
-  pam_login(username, password, &pid);
+  if (pam_login(username, password, &pid) == false)
+    return false;
   waitpid(pid, &status, 0);
   pam_logout();
+  return true;
 }
 
-void pam_login(char const * const username, char const * const password, pid_t * const child_pid)
+bool pam_login(char const * const username, char const * const password, pid_t * const child_pid)
 {
   int result;
   char const *data[2] = { username, password };
@@ -68,6 +70,8 @@ void pam_login(char const * const username, char const * const password, pid_t *
     pam_setcred(pam_handle, PAM_DELETE_CRED);
     pam_err("pam_open_session");
   }
+  if (result != PAM_SUCCESS)
+    return false;
   struct passwd * const pw = getpwnam(username);
   init_env(pw);
 
@@ -86,6 +90,7 @@ void pam_login(char const * const username, char const * const password, pid_t *
       puts("We're in the parent");
       break;
   }
+  return true;
 }
 
 static int conv(int num_msg, const struct pam_message **msg,

@@ -15,9 +15,16 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
 #include "window.h"
 #include "main.h"
 #include "draw.h"
+
+xcb_gcontext_t main_ctx;
+xcb_gcontext_t ctxs[CTXS_NUMBER];
 
 void draw(void)
 {
@@ -29,7 +36,34 @@ void draw(void)
     {0, screen->height_in_pixels - BORDER_WIDTH, screen->width_in_pixels, BORDER_WIDTH},
   };
 
-  xcb_poly_fill_rectangle(c, win, foreground, sizeof(rectangles) / sizeof(rectangles[0]), rectangles);
-  xcb_image_text_8(c, 5, win, foreground, 40, 40, "hello");
+  xcb_poly_fill_rectangle(c, win, main_ctx, sizeof(rectangles) / sizeof(rectangles[0]), rectangles);
+  xcb_image_text_8(c, 5, win, ctxs[CTX_TEXT], 40, 40, "hello");
   xcb_flush(c);
+}
+
+static void *color_border(void *arg)
+{
+  t_draw_options * const colors = (t_draw_options * const)arg;
+  printf("from: [%d]\nto: [%d]\n", colors->from, colors->to);
+  pthread_mutex_lock(&lock_ctxs);
+  main_ctx = ctxs[colors->from];
+  pthread_mutex_unlock(&lock_ctxs);
+  draw();
+  usleep(200000);
+  pthread_mutex_lock(&lock_ctxs);
+  main_ctx = ctxs[colors->to];
+  pthread_mutex_unlock(&lock_ctxs);
+  draw();
+  free(colors);
+  return NULL;
+}
+
+void draw_borders(t_draw_options *args)
+{
+  pthread_t tid;
+  int const err = pthread_create(&tid, NULL, &color_border, (void *)args);
+  if (err != 0)
+    printf("\ncan't create thread :[%s]", strerror(err));
+  else
+    pthread_detach(tid);
 }

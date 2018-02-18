@@ -16,9 +16,9 @@
 */
 
 #include "main.h"
+#include "draw.h"
 #include "window.h"
 
-xcb_gcontext_t foreground;
 xcb_drawable_t win;
 
 static xcb_gcontext_t create_graphical_ctx(uint32_t const color)
@@ -39,7 +39,14 @@ void create_window(void)
 
   win = screen->root;
 
-  foreground = create_graphical_ctx(0xA349A3);
+  ctxs[CTX_IDLE] = create_graphical_ctx(COLOR_IDLE);
+  ctxs[CTX_TYPE] = create_graphical_ctx(COLOR_TYPE);
+  ctxs[CTX_PROCESSING] = create_graphical_ctx(COLOR_PROCESSING);
+  ctxs[CTX_DENIED] = create_graphical_ctx(COLOR_DENIED);
+  ctxs[CTX_GRANTED] = create_graphical_ctx(COLOR_GRANTED);
+  ctxs[CTX_TEXT] = create_graphical_ctx(COLOR_TEXT);
+  main_ctx = ctxs[0];
+
   /* create the window */
   win = xcb_generate_id(c);
   mask = XCB_CW_BACK_PIXEL | XCB_CW_EVENT_MASK;

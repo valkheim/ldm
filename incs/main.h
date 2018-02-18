@@ -22,3 +22,4 @@
 
 extern xcb_connection_t *c;
 extern xcb_screen_t *screen;
+extern pthread_mutex_t lock_ctxs;

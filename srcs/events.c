@@ -39,7 +39,7 @@ static void print_modifiers(xcb_keycode_t const detail, uint32_t state)
   puts(")");
 }
 
-static bool handle_control_keysym(xkb_keysym_t const ksym)
+static bool handle_control_keysym(xkb_keysym_t const ksym, t_draw_options * const colors)
 {
   switch (ksym) {
     case XKB_KEY_Left:
@@ -56,9 +56,12 @@ static bool handle_control_keysym(xkb_keysym_t const ksym)
       return true;
     case XKB_KEY_Return:
       puts("RETURN");
-      login("ldm", "ldm");
+      colors->from = CTX_PROCESSING;
+      if (login("ldm", "dm") == false)
+        colors->from = CTX_DENIED;
       return true;
     case XKB_KEY_BackSpace:
+      colors->from = CTX_PROCESSING;
       puts("BACKSPACE");
       return true;
     default:
@@ -71,10 +74,16 @@ static void xkb_get_keysym(xcb_keycode_t const detail)
   char buffer[128];
   bool composed = false;
   int n = 0;
+  t_draw_options * const colors = (t_draw_options *)malloc(sizeof(*colors));
+  colors->from = CTX_TYPE;
+  colors->to = CTX_IDLE;
 
   xkb_keysym_t ksym = xkb_state_key_get_one_sym(xkb_state, detail);
-  if (handle_control_keysym(ksym))
+  if (handle_control_keysym(ksym, colors))
+  {
+    draw_borders(colors);
     return;
+  }
   if (xkb_compose_state && xkb_compose_state_feed(xkb_compose_state, ksym) == XKB_COMPOSE_FEED_ACCEPTED) {
     switch (xkb_compose_state_get_status(xkb_compose_state)) {
       case XKB_COMPOSE_NOTHING:
@@ -93,6 +102,7 @@ static void xkb_get_keysym(xcb_keycode_t const detail)
         return;
     }
   }
+  draw_borders(colors);
 
   if (!composed) {
     n = xkb_keysym_to_utf8(ksym, buffer, sizeof(buffer));
@@ -139,30 +149,23 @@ void event_management(xcb_generic_event_t const * const event)
 void dm_event_loop()
 {
   xcb_generic_event_t *e;
-  int done;
-
 
   /* enter the main loop */
-  done = 0;
-  while (!done && (e = xcb_wait_for_event(c)))
+  while ((e = xcb_wait_for_event(c)))
   {
-    switch(e->response_type & ~0x80)
+    switch(e->response_type)
     {
       /* (re)draw the window */
       case XCB_EXPOSE:
-        printf ("EXPOSE\n");
-        xcb_expose_event_t *ev = (xcb_expose_event_t *)e;
-        printf ("Window %u exposed. Region to be redrawn at location (%d,%d), with dimension (%d,%d)\n",
-            ev->window, ev->x, ev->y, ev->width, ev->height);
-        draw();
+        {
+          xcb_expose_event_t *ev = (xcb_expose_event_t *)e;
+          printf ("Window %u exposed. Region to be redrawn at location (%d,%d), with dimension (%d,%d)\n",
+              ev->window, ev->x, ev->y, ev->width, ev->height);
+          draw();
+        }
         break;
-        //case XCB_KEY_PRESS:
-        //  xcb_poly_fill_rectangle(c, win, foreground, 1, rectangles);
-        //  xcb_flush(c);
-        //  done = 1;
-        //  break;
       default:
-        printf("event = %s\n",xcb_event_get_label(e->response_type));
+        //printf("event = %s\n",xcb_event_get_label(e->response_type));
         event_management(e);
     }
     free(e);

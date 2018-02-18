@@ -15,6 +15,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <stdlib.h>
 #include <unistd.h>
 #include <stdio.h>
 #include <signal.h>
@@ -27,6 +28,7 @@
 
 xcb_connection_t *c;
 xcb_screen_t *screen;
+pthread_mutex_t lock_ctxs;
 
 static void display_screen_infos(void)
 {
@@ -37,6 +39,14 @@ static void display_screen_infos(void)
   printf ("  white pixel...: %u\n", screen->white_pixel);
   printf ("  black pixel...: %u\n", screen->black_pixel);
   printf ("\n");
+}
+
+static int gtfo(t_args const * const args, int const exit_status)
+{
+  if (args->x == true)
+    stop_x_server();
+  xcb_disconnect(c);
+  return exit_status;
 }
 
 int main(int const argc, char **argv)
@@ -62,10 +72,14 @@ int main(int const argc, char **argv)
   display_screen_infos();
   create_window();
   setup_keyboard();
+  if (pthread_mutex_init(&lock_ctxs, NULL) != 0)
+  {
+    fprintf(stderr, "mutex init failed\n");
+    return gtfo(args, EXIT_FAILURE);
+  }
   dm_event_loop();
 
-  if (args->x == true)
-    stop_x_server();
-  xcb_disconnect(c);
-  return 0;
+  // use atexit(). fork() behaviour ?
+  pthread_mutex_destroy(&lock_ctxs);
+  return gtfo(args, EXIT_SUCCESS);
 }

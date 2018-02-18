@@ -43,7 +43,7 @@ INC += -I /usr/include/xcb
 CFLAGS = -W -Wall -Werror -Wextra -pedantic
 CFLAGS += $(INC)
 
-LDFLAGS = `pkg-config --libs xcb xcb-util xcb-keysyms xcb-xkb xkbcommon xkbcommon-x11` -lpam
+LDFLAGS = `pkg-config --libs xcb xcb-util xcb-keysyms xcb-xkb xkbcommon xkbcommon-x11` -lpam -lpthread
 
 all: $(NAME)
 

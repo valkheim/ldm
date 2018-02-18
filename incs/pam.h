@@ -28,6 +28,6 @@
     break; \
   } while (1); \
 
-void login(char const * const username, char const * const password);
-void pam_login(char const * const username, char const * const password, pid_t * const child_pid);
+bool login(char const * const username, char const * const password);
+bool pam_login(char const * const username, char const * const password, pid_t * const child_pid);
 bool pam_logout(void);
