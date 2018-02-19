@@ -16,8 +16,12 @@
 */
 
 #pragma once
+#include <stdbool.h>
 #include <xcb/xcb.h>
 #include "events.h"
 
-void create_window(void);
 extern xcb_drawable_t win;
+extern xcb_gcontext_t font_ctx;
+
+void create_window(void);
+bool create_font_context(char const *);

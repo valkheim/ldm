@@ -15,12 +15,15 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <stdio.h>
+#include <string.h>
 #include "config.h"
 #include "main.h"
 #include "draw.h"
 #include "window.h"
 
 xcb_drawable_t win;
+xcb_gcontext_t font_ctx;
 
 static xcb_gcontext_t create_graphical_ctx(uint32_t const color)
 {
@@ -69,4 +72,45 @@ void create_window(void)
                     mask, values);                 /* masks, values       */
   xcb_map_window(c, win);
   xcb_flush(c);
+}
+
+bool create_font_context(char const *font_name)
+{
+  uint32_t             value_list[3];
+  xcb_void_cookie_t    cookie_font;
+  xcb_void_cookie_t    cookie_gc;
+  xcb_generic_error_t *error;
+  xcb_font_t           font;
+  uint32_t             mask;
+
+  font = xcb_generate_id(c);
+  cookie_font = xcb_open_font_checked(c, font, strlen(font_name), font_name);
+
+  error = xcb_request_check(c, cookie_font);
+  if(error)
+  {
+    fprintf(stderr, "ERROR: can't open font : %d\n", error->error_code);
+    return false;
+  }
+
+  font_ctx = xcb_generate_id(c);
+  mask = XCB_GC_FOREGROUND | XCB_GC_BACKGROUND | XCB_GC_FONT;
+  value_list[0] = COLOR_TEXT; // foreground
+  value_list[1] = COLOR_IDLE; // background
+  value_list[2] = font;
+  cookie_gc = xcb_create_gc_checked(c, font_ctx, win, mask, value_list);
+  error = xcb_request_check(c, cookie_gc);
+  if (error)
+  {
+    fprintf(stderr, "ERROR: can't create font_ctx : %d\n", error->error_code);
+    return -1;
+  }
+  cookie_font = xcb_close_font_checked(c, font);
+  error = xcb_request_check(c, cookie_font);
+  if (error)
+  {
+    fprintf(stderr, "ERROR: can't close font : %d\n", error->error_code);
+    return false;
+  }
+  return true;
 }

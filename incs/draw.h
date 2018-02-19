@@ -27,6 +27,7 @@
 
 extern xcb_gcontext_t main_ctx;
 extern xcb_gcontext_t ctxs[CTXS_NUMBER];
+extern xcb_generic_error_t const * font_err;
 
 typedef struct
 {

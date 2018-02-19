@@ -46,6 +46,10 @@ static int gtfo(t_args const * const args, int const exit_status)
   if (args->x == true)
     stop_x_server();
   xcb_disconnect(c);
+  xcb_void_cookie_t const cookie_gc = xcb_free_gc(c, font_ctx);
+  xcb_generic_error_t const * error = xcb_request_check(c, cookie_gc);
+  if (error)
+    fprintf(stderr, "ERROR: can't free font_ctx : %d\n", error->error_code);
   return exit_status;
 }
 
@@ -71,6 +75,7 @@ int main(int const argc, char **argv)
 
   display_screen_infos();
   create_window();
+  create_font_context("10x20");
   setup_keyboard();
   if (pthread_mutex_init(&lock_ctxs, NULL) != 0)
   {
