@@ -29,3 +29,5 @@
 #define COLOR_TEXT (0xd3d7cf) /* aluminium */
 
 #define PASSWORD_MAX_LENGTH (512)
+
+#define FONT ("10x20")

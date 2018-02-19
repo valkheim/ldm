@@ -25,6 +25,7 @@
 #include "keyboard.h"
 #include "x.h"
 #include "args.h"
+#include "config.h"
 
 xcb_connection_t *c;
 xcb_screen_t *screen;
@@ -75,7 +76,7 @@ int main(int const argc, char **argv)
 
   display_screen_infos();
   create_window();
-  create_font_context("10x20");
+  create_font_context(FONT);
   setup_keyboard();
   if (pthread_mutex_init(&lock_ctxs, NULL) != 0)
   {

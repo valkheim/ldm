@@ -50,9 +50,7 @@ void draw(void)
   };
 
   xcb_poly_fill_rectangle(c, win, main_ctx, sizeof(rectangles) / sizeof(rectangles[0]), rectangles);
-  xcb_image_text_8(c, 5, win, ctxs[CTX_TEXT], 40, 40, "hello");
-  char * text = "Press ESC key to exit...";
-  text_draw(10, 100 - 10, text);
+  text_draw(100, 100, "Welcome to LDM...");
   xcb_flush(c);
 }
 
