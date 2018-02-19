@@ -132,7 +132,7 @@ static void xkb_get_keysym(xcb_keycode_t const detail)
     memcpy(password + input_position, buffer, (size_t)(n - 1));
     input_position += (size_t)(n - 1);
   }
-  printf("current password = %.*s\ninput position = %d\n", input_position, password, input_position);
+  printf("current password = %.*s\ninput position = %u\n", input_position, password, input_position);
 }
 
 static void key_press_management(xcb_generic_event_t const * const e)
