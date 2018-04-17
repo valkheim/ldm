@@ -6,6 +6,12 @@ Trying to get comfy with x11, xcb, xkbcommon, pam.
 
 ldm starts an X server, open a pam session, source user's xinitrc, waits, closes pam session.
 
+User selection (left/right arrow selection) :
+
+![preview](preview.png)
+
+Border color is added when typing and pam success/failure
+
 ## Lean
 
 Using valgrind's massif tool and massif-visualizer.
