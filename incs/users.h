@@ -17,7 +17,4 @@
 
 #pragma once
 
-extern size_t current_user;
-
-void event_management(xcb_generic_event_t const * const);
-void event_loop(void);
+static char *users[] = { "ldm", "root"};

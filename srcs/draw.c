@@ -24,6 +24,7 @@
 #include "window.h"
 #include "main.h"
 #include "draw.h"
+#include "users.h"
 
 xcb_gcontext_t main_ctx;
 xcb_gcontext_t ctxs[CTXS_NUMBER];
@@ -48,9 +49,9 @@ void draw(void)
     {0, 0, screen->width_in_pixels, BORDER_WIDTH},
     {0, (int16_t)(screen->height_in_pixels - BORDER_WIDTH), screen->width_in_pixels, BORDER_WIDTH},
   };
-
   xcb_poly_fill_rectangle(c, win, main_ctx, sizeof(rectangles) / sizeof(rectangles[0]), rectangles);
-  text_draw(100, 100, "Welcome to LDM...");
+  text_draw(screen->width_in_pixels / 2, screen->height_in_pixels / 2, "                 ");
+  text_draw(screen->width_in_pixels / 2 - 20, screen->height_in_pixels / 2, users[current_user % (sizeof(users) / sizeof(users[0]))]);
   xcb_flush(c);
 }
 
