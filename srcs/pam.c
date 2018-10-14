@@ -110,7 +110,6 @@ bool pam_login(char const * const username, char const * const password,
       fprintf(stderr, "No fork done\n");
       break;
     default:
-      puts("We're in the parent");
       // We should return from the event loop and exit properly
       exit(0);
       break;
