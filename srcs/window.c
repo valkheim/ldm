@@ -74,7 +74,7 @@ void create_window(void)
   xcb_flush(c);
 }
 
-bool create_font_context(char const *font_name)
+bool create_font_context(char const * const font_name)
 {
   uint32_t             value_list[3];
   xcb_void_cookie_t    cookie_font;

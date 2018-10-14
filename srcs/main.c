@@ -32,6 +32,7 @@ xcb_connection_t *c;
 xcb_screen_t *screen;
 pthread_mutex_t lock_ctxs;
 
+__attribute__((unused))
 static void display_screen_infos(void)
 {
   printf ("\n");
@@ -92,7 +93,9 @@ int main(int const argc, char **argv)
   }
   screen = xcb_setup_roots_iterator(xcb_get_setup(c)).data;
 
+#ifdef DEBUG
   display_screen_infos();
+#endif
   create_window();
   create_font_context(FONT);
   setup_keyboard();

@@ -24,4 +24,4 @@ extern xcb_drawable_t win;
 extern xcb_gcontext_t font_ctx;
 
 void create_window(void);
-bool create_font_context(char const *);
+bool create_font_context(char const * const);

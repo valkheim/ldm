@@ -43,7 +43,7 @@ void start_x_server(t_args *args)
   {
     char cmd[32];
     snprintf(cmd, sizeof(cmd), "/usr/bin/X %s %s", args->display, args->vt);
-    execl("/bin/bash", "/bin/bash", "-c", cmd, NULL);
+    execl("/bin/sh", "/bin/sh", "-c", cmd, NULL);
     printf("Failed to start X server");
     exit(1);
   }
