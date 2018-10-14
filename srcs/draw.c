@@ -31,7 +31,7 @@ xcb_gcontext_t ctxs[CTXS_NUMBER];
 
 static void text_draw(int16_t const x1, int16_t const y1, const char * const label)
 {
-  xcb_void_cookie_t const cookie_text = xcb_image_text_8_checked(c, strlen(label), win, font_ctx, x1, y1, label);
+  xcb_void_cookie_t const cookie_text = xcb_image_text_8_checked(c, (uint8_t)strlen(label), win, font_ctx, x1, y1, label);
   xcb_generic_error_t const * error = xcb_request_check(c, cookie_text);
   if (error)
   {

@@ -84,7 +84,7 @@ bool create_font_context(char const * const font_name)
   uint32_t             mask;
 
   font = xcb_generate_id(c);
-  cookie_font = xcb_open_font_checked(c, font, strlen(font_name), font_name);
+  cookie_font = xcb_open_font_checked(c, font, (uint16_t)strlen(font_name), font_name);
 
   error = xcb_request_check(c, cookie_font);
   if(error)

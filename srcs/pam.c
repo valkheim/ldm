@@ -112,7 +112,6 @@ bool pam_login(char const * const username, char const * const password,
     default:
       // We should return from the event loop and exit properly
       exit(0);
-      break;
   }
   return true;
 }

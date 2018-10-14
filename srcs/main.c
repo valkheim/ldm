@@ -56,23 +56,6 @@ static int gtfo(t_args const * const args, int const exit_status)
   return exit_status;
 }
 
-char **splittab(char const * const s, char const tkn)
-{
-  size_t i = 0, x = 0, y = 0;
-  char **t;
-  if (!(t = malloc(sizeof(*t) * (strlen(s) + 1)))) return (NULL);
-  while (i < strlen(s))
-  {
-    while (s[i] == tkn) i++;
-    if (!(t[y] = malloc(sizeof(**t) * (strlen(s) + 1)))) return (NULL);
-    x = 0;
-    while (s[i] != tkn && s[i] != 0) t[y][x++] = s[i++];
-    t[y++][x] = '\0';
-  }
-  t[y] = NULL;
-  return (t);
-}
-
 int main(int const argc, char **argv)
 {
   t_args *args;
