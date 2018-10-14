@@ -43,7 +43,7 @@ static void text_draw(int16_t const x1, int16_t const y1, const char * const lab
 void draw(void)
 {
   xcb_rectangle_t rectangles[] = {
-  /* x, y, wdt, hgt */
+  /* x, y, w, h */
     {0, 0, BORDER_WIDTH, screen->height_in_pixels},
     {(int16_t)(screen->width_in_pixels - BORDER_WIDTH), 0, BORDER_WIDTH, screen->height_in_pixels},
     {0, 0, screen->width_in_pixels, BORDER_WIDTH},

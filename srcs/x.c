@@ -39,17 +39,18 @@ void start_x_server(t_args *args)
 {
   signal(SIGSEGV, sig_handler);
   signal(SIGTRAP, sig_handler);
-  if ((x_server_pid = fork()) == 0)
+  char cmd[32]; // may overflow
+  switch(x_server_pid = fork())
   {
-    char cmd[32];
-    snprintf(cmd, sizeof(cmd), "/usr/bin/X %s %s", args->display, args->vt);
-    execl("/bin/sh", "/bin/sh", "-c", cmd, NULL);
-    printf("Failed to start X server");
-    exit(1);
+    case 0:
+      snprintf(cmd, sizeof(cmd), "/usr/bin/X %s %s", args->display, args->vt);
+      execl("/bin/sh", "/bin/sh", "-c", cmd, NULL);
+      break;
+    case -1:
+      fprintf(stderr, "No fork done\n");
+      break;
+    default:
+      setenv("DISPLAY", args->display, true);
+      break;
   }
-  else
-  {
-    sleep(1);
-  }
-  setenv("DISPLAY", args->display, true);
 }
