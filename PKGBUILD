@@ -1,4 +1,5 @@
 # Maintainer: Charles Paulet <charles.paulet@epitech.eu>
+# Contributor: Charles Paulet <charles.paulet@epitech.eu>
 pkgname=ldm
 pkgver=1.0
 pkgrel=1
