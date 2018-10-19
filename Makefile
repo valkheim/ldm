@@ -18,7 +18,7 @@
 CC = gcc
 RM = rm -rf
 NAME = ldm
-RULES = all clean fclean dbg re
+RULES = all clean fclean dbg re test check
 
 D_OBJS = objs
 D_SRCS = srcs
@@ -79,6 +79,9 @@ test: re
 	sudo Xephyr -br -ac -noreset -screen "1024x640" :2 &
 	sleep 1
 	DISPLAY=:2 sudo ./$(NAME) -d ":2"
+
+check:
+	@echo -e "Check !"
 
 dbg: CFLAGS += -g3 -O0 -DDEBUG
 dbg: re
