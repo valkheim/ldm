@@ -63,7 +63,7 @@ install: all
 	$(INSTALL_DIR) $(DESTDIR)$(PREFIX)/lib/systemd/system/
 	$(INSTALL_DATA) $(NAME).service $(DESTDIR)$(PREFIX)/lib/systemd/system/
 
-	$(INSTALL_DIR) $(DESTDIR)$(PREFIX)/lib/systemd/system/
+	$(INSTALL_DIR) $(DESTDIR)$(PREFIX)/share/xsessions/
 	$(INSTALL_DATA) $(NAME).desktop $(DESTDIR)$(PREFIX)/share/xsessions/
 	#install -D $(NAME) $(DESTDIR)$(BINDIR)
 	#install $(NAME).service $(DESTDIR)$(PREFIX)/lib/systemd/system/
