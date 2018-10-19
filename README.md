@@ -28,6 +28,7 @@ Using valgrind's massif tool and massif-visualizer.
 *  `xlsfonts` to list fonts of system
 *  `incs/users.h` is list of users
 *  `incs/config.h` is some config (font, colors, terminal, default display)
+*  `make test` to execute in Xephyr
 
 ## License
 
