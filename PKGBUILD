@@ -11,7 +11,7 @@ depends=()
 makedepends=('git')
 provides=("$pkgname")
 conflicts=("$pkgname")
-source=("$pkgname-git::git+https://github.com/valkheim/ldm")
+source=("$pkgname-$pkgver::git+https://github.com/valkheim/ldm")
 md5sums=('SKIP')
 sha256sums=('SKIP')
 

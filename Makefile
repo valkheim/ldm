@@ -22,6 +22,10 @@ RULES = all clean fclean dbg re test check
 
 PREFIX ?= /usr
 BINDIR = $(PREFIX)/bin
+INSTALL = install -p
+INSTALL_PROGRAM = $(INSTALL) -m755
+INSTALL_DATA = $(INSTALL) -m644
+INSTALL_DIR = $(INSTALL) -d
 
 D_OBJS = objs
 D_SRCS = srcs
@@ -50,10 +54,20 @@ LDFLAGS = `pkg-config --libs xcb xcb-util xcb-keysyms xcb-xkb xkbcommon xkbcommo
 
 all: $(NAME)
 
+# https://github.com/graysky2/profile-sync-daemon/blob/master/Makefile
+# https://aur.archlinux.org/cgit/aur.git/tree/PKGBUILD?h=profile-sync-daemon
 install: all
-	install -D $(NAME) $(DESTDIR)$(BINDIR)
-	install $(NAME).service $(DESTDIR)$(PREFIX)/lib/systemd/system/
-	install $(NAME).desktop $(DESTDIR)$(PREFIX)/share/xsessions/
+	$(INSTALL_DIR) $(DESTDIR)$(BINDIR)
+	$(INSTALL_PROGRAM) $(NAME) $(DESTDIR)$(BINDIR)/$(NAME)
+
+	$(INSTALL_DIR) $(DESTDIR)$(PREFIX)/lib/systemd/system/
+	$(INSTALL_DATA) $(NAME).service $(DESTDIR)$(PREFIX)/lib/systemd/system/
+
+	$(INSTALL_DIR) $(DESTDIR)$(PREFIX)/lib/systemd/system/
+	$(INSTALL_DATA) $(NAME).desktop $(DESTDIR)$(PREFIX)/share/xsessions/
+	#install -D $(NAME) $(DESTDIR)$(BINDIR)
+	#install $(NAME).service $(DESTDIR)$(PREFIX)/lib/systemd/system/
+	#install $(NAME).desktop $(DESTDIR)$(PREFIX)/share/xsessions/
 
 uninstall:
 	rm -f $(DESTDIR)$(BINDIR)/$(NAME)
