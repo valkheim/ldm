@@ -54,8 +54,6 @@ LDFLAGS = `pkg-config --libs xcb xcb-util xcb-keysyms xcb-xkb xkbcommon xkbcommo
 
 all: $(NAME)
 
-# https://github.com/graysky2/profile-sync-daemon/blob/master/Makefile
-# https://aur.archlinux.org/cgit/aur.git/tree/PKGBUILD?h=profile-sync-daemon
 install: all
 	$(INSTALL_DIR) $(DESTDIR)$(BINDIR)
 	$(INSTALL_PROGRAM) $(NAME) $(DESTDIR)$(BINDIR)/$(NAME)
