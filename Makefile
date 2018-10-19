@@ -20,6 +20,9 @@ RM = rm -rf
 NAME = ldm
 RULES = all clean fclean dbg re test check
 
+PREFIX ?= /usr
+BINDIR = $(PREFIX)/bin
+
 D_OBJS = objs
 D_SRCS = srcs
 D_INCS = incs
@@ -48,14 +51,14 @@ LDFLAGS = `pkg-config --libs xcb xcb-util xcb-keysyms xcb-xkb xkbcommon xkbcommo
 all: $(NAME)
 
 install: all
-	install -D $(NAME) /usr/bin/
-	install $(NAME).service /usr/lib/systemd/system/
-	install $(NAME).desktop /usr/share/xsessions/
+	install -D $(NAME) $(DESTDIR)$(BINDIR)
+	install $(NAME).service $(DESTDIR)$(PREFIX)/lib/systemd/system/
+	install $(NAME).desktop $(DESTDIR)$(PREFIX)/share/xsessions/
 
 uninstall:
-	rm -f /usr/bin/$(NAME)
-	rm -f /usr/lib/systemd/system/$(NAME).service
-	rm -f /usr/share/xsessions/$(NAME).desktop
+	rm -f $(DESTDIR)$(BINDIR)/$(NAME)
+	rm -f $(DESTDIR)$(PREFIX)/lib/systemd/system/$(NAME).service
+	rm -f $(DESTDIR)$(PREFIX)/share/xsessions/$(NAME).desktop
 
 $(NAME): $(OBJS)
 	$(CC) -o $(NAME) $(OBJS) $(CFLAGS) $(LDFLAGS)
