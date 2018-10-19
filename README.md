@@ -10,7 +10,7 @@ User selection (left/right arrow selection) :
 
 ![preview](preview.png)
 
-Border color is added when typing and pam success/failure
+Border color is added when typing/erasing and on pam success/failure
 
 ## Lean
 
