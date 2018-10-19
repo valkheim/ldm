@@ -18,8 +18,6 @@
 #pragma once
 #include <stdbool.h>
 
-#define SERVICE_NAME ("ldm")
-
 #define pam_err(name) \
   do { \
     fprintf(stderr, "%s: %s\n", name, \

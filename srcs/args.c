@@ -21,6 +21,7 @@
 #include <err.h>
 #include <string.h>
 #include "args.h"
+#include "config.h"
 
 bool args_usage(t_args *args)
 {
@@ -84,6 +85,6 @@ void init_args(t_args **args, int ac, char **av)
   (*args)->ac = ac;
   (*args)->av = av;
   (*args)->x = true;
-  (*args)->display = ":1";
-  (*args)->vt = "vt01";
+  (*args)->display = DISPLAY;
+  (*args)->vt = VT;
 }

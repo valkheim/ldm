@@ -30,4 +30,7 @@
 
 #define PASSWORD_MAX_LENGTH (512)
 
+#define SERVICE_NAME ("ldm")
 #define FONT ("6x13")
+#define DISPLAY (":1")
+#define VT ("vt01")

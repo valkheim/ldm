@@ -22,14 +22,11 @@
 #include <pwd.h>
 #include <paths.h>
 #include <sys/wait.h>
-
+#include "config.h"
 #include "pam.h"
 
-static void init_env(struct passwd *pw);
-static void set_env(char *name, char *value);
-static int end(int last_result);
-
-static int conv(int num_msg, const struct pam_message **msg,
+static int end(int const last_result);
+static int conv(int const num_msg, struct pam_message const **msg,
     struct pam_response **resp, void *appdata_ptr);
 
 static pam_handle_t *pam_handle;
@@ -41,18 +38,46 @@ bool login(char const * const username, char const * const password)
 
   if (pam_login(username, password, &pid) == false)
     return false;
+  puts("BEFORE WAITPID");
   waitpid(pid, &status, 0);
+  puts("AFTER WAITPID");
   pam_logout();
   return true;
 }
 
-bool pam_login(char const * const username, char const * const password, pid_t * const child_pid)
+static void set_env(char const * const name, char const * const value) {
+  // The `+ 2` is for the '=' and the null terminator
+  size_t name_value_len = strlen(name) + strlen(value) + 2;
+  char *name_value = malloc(name_value_len);
+  snprintf(name_value, name_value_len, "%s=%s", name, value);
+  pam_putenv(pam_handle, name_value);
+  free(name_value);
+}
+
+static void init_env(struct passwd const * const pw)
+{
+  set_env("HOME", pw->pw_dir);
+  set_env("PWD", pw->pw_dir);
+  set_env("SHELL", pw->pw_shell);
+  set_env("USER", pw->pw_name);
+  set_env("LOGNAME", pw->pw_name);
+  set_env("PATH", "/usr/local/sbin:/usr/local/bin:/usr/bin");
+  set_env("MAIL", _PATH_MAILDIR);
+
+  size_t const xauthority_len = strlen(pw->pw_dir) + strlen("/.Xauthority") + 1;
+  char * const xauthority = malloc(xauthority_len);
+  snprintf(xauthority, xauthority_len, "%s/.Xauthority", pw->pw_dir);
+  set_env("XAUTHORITY", xauthority);
+  free(xauthority);
+}
+
+
+bool pam_login(char const * const username, char const * const password,
+    pid_t * const child_pid)
 {
   int result;
   char const *data[2] = { username, password };
-  struct pam_conv const pam_conv = {
-    conv, data
-  };
+  struct pam_conv const pam_conv = { conv, data };
 
   result = pam_start(SERVICE_NAME, username, &pam_conv, &pam_handle);
   if (result != PAM_SUCCESS)
@@ -89,15 +114,17 @@ bool pam_login(char const * const username, char const * const password, pid_t *
       fprintf(stderr, "No fork done\n");
       break;
     default:
-      puts("We're in the parent");
-      exit(6);
-      break;
+      /* We should close the window but not exit. We handle X for display manager, we cannot detach it and return */
+      exit(0); // This exit closes ldm but not X. We should close the ldm window instead
+      puts("DEFAULT ret true");
+      return true;
   }
   return true;
 }
 
-static int conv(int num_msg, const struct pam_message **msg,
-    struct pam_response **resp, void *appdata_ptr) {
+static int conv(int const num_msg, struct pam_message const **msg,
+    struct pam_response **resp, void *appdata_ptr)
+{
   int i;
   int result;
   char *username = NULL;
@@ -138,32 +165,6 @@ static int conv(int num_msg, const struct pam_message **msg,
   return result;
 }
 
-static void init_env(struct passwd * const pw)
-{
-  set_env("HOME", pw->pw_dir);
-  set_env("PWD", pw->pw_dir);
-  set_env("SHELL", pw->pw_shell);
-  set_env("USER", pw->pw_name);
-  set_env("LOGNAME", pw->pw_name);
-  set_env("PATH", "/usr/local/sbin:/usr/local/bin:/usr/bin");
-  set_env("MAIL", _PATH_MAILDIR);
-
-  size_t const xauthority_len = strlen(pw->pw_dir) + strlen("/.Xauthority") + 1;
-  char * const xauthority = malloc(xauthority_len);
-  snprintf(xauthority, xauthority_len, "%s/.Xauthority", pw->pw_dir);
-  set_env("XAUTHORITY", xauthority);
-  free(xauthority);
-}
-
-static void set_env(char *name, char *value) {
-  // The `+ 2` is for the '=' and the null byte
-  size_t name_value_len = strlen(name) + strlen(value) + 2;
-  char *name_value = malloc(name_value_len);
-  snprintf(name_value, name_value_len,  "%s=%s", name, value);
-  pam_putenv(pam_handle, name_value);
-  free(name_value);
-}
-
 bool pam_logout(void)
 {
   int result = pam_close_session(pam_handle, 0);
@@ -181,7 +182,7 @@ bool pam_logout(void)
   return true;
 }
 
-static int end(int last_result)
+static int end(int const last_result)
 {
   int result = pam_end(pam_handle, last_result);
   pam_handle = 0;
