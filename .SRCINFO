@@ -1,4 +1,4 @@
-pkgbase = ldm-git
+pkgbase = lean-display-manager
 	pkgdesc = Lean Display Manager
 	pkgver = 1.0
 	pkgrel = 1
@@ -9,11 +9,11 @@ pkgbase = ldm-git
 	makedepends = git
 	depends = xcb-util
 	depends = pam
-	provides = ldm-git
-	conflicts = ldm-git
-	source = ldm-git-1.0::git+https://github.com/valkheim/ldm
+	provides = lean-display-manager
+	conflicts = lean-display-manager
+	source = lean-display-manager-1.0::git+https://github.com/valkheim/ldm
 	md5sums = SKIP
 	sha256sums = SKIP
 
-pkgname = ldm-git
+pkgname = lean-display-manager
 

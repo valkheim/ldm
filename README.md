@@ -8,6 +8,11 @@ ldm starts an X server, open a pam session, source user's xinitrc, waits, closes
 
 User selection (left/right arrow selection) :
 
+Available on AUR under name lean-display-manager
+```
+(yay|trizen|pacaur) -S lean-display-manager
+```
+
 ![preview](preview.png)
 
 Border color is added when typing/erasing and on pam success/failure
@@ -17,11 +22,6 @@ Border color is added when typing/erasing and on pam success/failure
 Using valgrind's massif tool and massif-visualizer.
 
 ![Memory consumption](memory_consumption.png)
-
-*  http://0pointer.de/blog/projects/serial-console.html
-*  https://standards.freedesktop.org/desktop-entry-spec/latest/
-*  https://github.com/sddm/sddm/
-*  https://wiki.archlinux.org/index.php/display_manager#Using_systemd-logind
 
 ## Troubleshoot
 
