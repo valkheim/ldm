@@ -1,6 +1,6 @@
 # Maintainer: Charles Paulet <charles.paulet@epitech.eu>
 # Contributor: Charles Paulet <charles.paulet@epitech.eu>
-pkgname=ldm-git
+pkgname=lean-display-manager
 pkgver=1.0
 pkgrel=1
 pkgdesc="Lean Display Manager"
