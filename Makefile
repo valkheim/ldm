@@ -65,9 +65,6 @@ install: all
 
 	$(INSTALL_DIR) $(DESTDIR)$(PREFIX)/share/xsessions/
 	$(INSTALL_DATA) $(NAME).desktop $(DESTDIR)$(PREFIX)/share/xsessions/
-	#install -D $(NAME) $(DESTDIR)$(BINDIR)
-	#install $(NAME).service $(DESTDIR)$(PREFIX)/lib/systemd/system/
-	#install $(NAME).desktop $(DESTDIR)$(PREFIX)/share/xsessions/
 
 uninstall:
 	rm -f $(DESTDIR)$(BINDIR)/$(NAME)
@@ -98,7 +95,7 @@ test: re
 	DISPLAY=:2 sudo ./$(NAME) -d ":2"
 
 check:
-	@echo -e "Check !"
+	@echo -e "No tests."
 
 dbg: CFLAGS += -g3 -O0 -DDEBUG
 dbg: re

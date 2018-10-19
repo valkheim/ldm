@@ -6,8 +6,7 @@ pkgdesc="Lean Display Manager"
 arch=('x86_64' 'i686')
 url="https://github.com/valkheim/ldm"
 license=('GPL3.0')
-depends=()
-#depends=('xcb' 'xcb-util' 'xcb-keysyms' 'xcb-xkb' 'xkbcommon' 'xkbcommon-x11' 'pam')
+depends=('xcb-util' 'pam')
 makedepends=('git')
 provides=("$pkgname")
 conflicts=("$pkgname")
@@ -17,11 +16,11 @@ sha256sums=('SKIP')
 
 build() {
   cd "$pkgname-$pkgver"
-  make
+  make || return 1
 }
 
 package() {
   cd "$pkgname-$pkgver"
-  make DESTDIR="$pkgdir" install
+  make DESTDIR="$pkgdir" install || return 1
   install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
 }
