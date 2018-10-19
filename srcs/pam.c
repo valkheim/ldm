@@ -1,3 +1,5 @@
+#include "main.h"
+#include "window.h"
 /*
  * This file is part of the ldm distribution (https://github.com/valkheim/ldm)
  * Copyright (c) 2018 Charles Paulet.
@@ -88,6 +90,7 @@ bool pam_login(char const * const username, char const * const password, pid_t *
       break;
     default:
       puts("We're in the parent");
+      exit(6);
       break;
   }
   return true;

@@ -17,4 +17,4 @@
 
 #pragma once
 
-static char *users[] = { "ldm", "root"};
+static char *users[] = { "lain", "valkheim", "ldm", "root"};

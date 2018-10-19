@@ -1,15 +1,10 @@
 [Unit]
 Description=Lean Display Manager
-After=systemd-user-sessions.service plymouth-quit-wait.service
-After=getty@tty2.service
+Conflicts=getty@tty1.service
+After=systemd-user-sessions.service getty@tty1.service plymouth-quit.service systemd-logind.service
 
 [Service]
-Type=simple
 ExecStart=/usr/bin/ldm
-StandardInput=tty
-TTYPath=/dev/tty2
-TTYReset=yes
-TTYVHangup=yes
 
 [Install]
 Alias=ldm.service

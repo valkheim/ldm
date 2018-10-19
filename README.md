@@ -18,6 +18,15 @@ Using valgrind's massif tool and massif-visualizer.
 
 ![Memory consumption](memory_consumption.png)
 
+http://0pointer.de/blog/projects/serial-console.html
+https://standards.freedesktop.org/desktop-entry-spec/latest/
+https://github.com/sddm/sddm/
+https://wiki.archlinux.org/index.php/display_manager#Using_systemd-logind
+
+## Troubleshoot
+
+*  `xlsfonts` to list fonts of system
+
 ## License
 
 Copyright (C) 2017-2018 Charles Paulet

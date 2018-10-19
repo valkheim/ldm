@@ -50,10 +50,12 @@ all: $(NAME)
 install: all
 	install -D $(NAME) /usr/bin/
 	install $(NAME).service /usr/lib/systemd/system/
+	install $(NAME).desktop /usr/share/xsessions/
 
 uninstall:
 	rm -f /usr/bin/$(NAME)
 	rm -f /usr/lib/systemd/system/$(NAME).service
+	rm -f /usr/share/xsessions/$(NAME).desktop
 
 $(NAME): $(OBJS)
 	$(CC) -o $(NAME) $(OBJS) $(CFLAGS) $(LDFLAGS)
@@ -74,7 +76,7 @@ fclean: clean uninstall
 re: fclean all
 
 test: re
-	Xephyr -br -ac -noreset -screen "1024x640" :2 &
+	sudo Xephyr -br -ac -noreset -screen "1024x640" :2 &
 	sleep 1
 	DISPLAY=:2 sudo ./$(NAME) -d ":2"
 

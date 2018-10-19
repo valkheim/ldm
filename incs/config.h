@@ -30,4 +30,4 @@
 
 #define PASSWORD_MAX_LENGTH (512)
 
-#define FONT ("10x20")
+#define FONT ("6x13")
