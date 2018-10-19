@@ -38,9 +38,7 @@ bool login(char const * const username, char const * const password)
 
   if (pam_login(username, password, &pid) == false)
     return false;
-  puts("BEFORE WAITPID");
   waitpid(pid, &status, 0);
-  puts("AFTER WAITPID");
   pam_logout();
   return true;
 }
@@ -114,10 +112,12 @@ bool pam_login(char const * const username, char const * const password,
       fprintf(stderr, "No fork done\n");
       break;
     default:
-      /* We should close the window but not exit. We handle X for display manager, we cannot detach it and return */
-      exit(0); // This exit closes ldm but not X. We should close the ldm window instead
-      puts("DEFAULT ret true");
-      return true;
+      (void)0;
+      xcb_void_cookie_t const t = xcb_destroy_window_checked(c, win);
+      xcb_generic_error_t const * const error = xcb_request_check(c, t);
+      if (error)
+        fprintf(stderr, "Failed to destroy window\n");
+      return error == NULL;
   }
   return true;
 }
